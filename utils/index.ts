@@ -1,13 +1,13 @@
-export const FileStatusEnum = {
-  ACCEPTED: 'accepted' as const,
-  QUEUED: 'queued' as const,
-  STARTED: 'started' as const,
-  COMPLETE: 'complete' as const,
-  FAILED: 'failed' as const,
-  REJECTED: 'rejected' as const,
-  CANCELLED: 'cancelled' as const,
-  CANCELLING: 'cancelling' as const,
-};
+export enum FileStatusEnum {
+  ACCEPTED = 'accepted',
+  QUEUED = 'queued',
+  STARTED = 'started',
+  COMPLETE = 'complete',
+  FAILED = 'failed',
+  REJECTED = 'rejected',
+  CANCELLED = 'cancelled',
+  CANCELLING = 'cancelling',
+}
 
 export function generateRandomStr(length: number = 5) {
   return '';
