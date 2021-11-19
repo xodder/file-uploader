@@ -8,7 +8,7 @@ interface CreateHandlerFnEventHooks {
   onCancel: () => void;
 }
 
-type FileUploaderConfig = Partial<{
+export type FileUploaderConfig = Partial<{
   allowedConcurrentUpload: number;
   allowedFileCount: number;
   maxAllowedFileSize: number;

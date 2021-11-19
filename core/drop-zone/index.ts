@@ -16,7 +16,7 @@ const defaultEventHooks = {
   onError: () => {},
 };
 
-export class DropZone {
+class DropZone {
   _disposers: Record<string, () => void> = {};
   _element: Element;
   _eventHooks: DropZoneEventHooks;
@@ -196,3 +196,5 @@ export class DropZone {
     Object.values(this._disposers).forEach((dispose) => dispose());
   }
 }
+
+export default DropZone;
