@@ -3,12 +3,10 @@ import MockEventEmitter from './mock-event-emitter';
 import { FileHandler, FileId, FileInfo } from './types';
 import { FileStatusEnum } from './utils';
 
-interface CreateHandlerFnHooks {
+interface CreateHandlerFnEventHooks {
   onProgress: (uploaded: number, total: number) => void;
   onCancel: () => void;
 }
-
-type CreateHandlerFn = (hooks: CreateHandlerFnHooks) => FileHandler;
 
 type FileUploaderConfig = Partial<{
   allowedConcurrentUpload: number;
@@ -18,8 +16,17 @@ type FileUploaderConfig = Partial<{
   allowedFileTypes: string[];
   multiple: boolean;
   autoUpload: boolean;
-  createHandler: CreateHandlerFn;
+  createHandler: (eventHooks: CreateHandlerFnEventHooks) => FileHandler;
 }>;
+
+type Uploads = {
+  queued: FileId[];
+  active: FileId[];
+  completed: FileId[];
+  failed: FileId[];
+};
+
+type FileProgress = [number, number];
 
 const defaultConfig = {
   allowedConcurrentUpload: 3,
@@ -31,13 +38,6 @@ const defaultConfig = {
   autoUpload: false,
 };
 
-type Uploads = {
-  queued: FileId[];
-  active: FileId[];
-  completed: FileId[];
-  failed: FileId[];
-};
-
 export class FileUploader extends MockEventEmitter {
   _fileManager: FileManager;
   _config: FileUploaderConfig = {};
@@ -47,7 +47,7 @@ export class FileUploader extends MockEventEmitter {
     completed: [],
     failed: [],
   };
-  _fileProgress: Record<FileId, [number, number]> = {};
+  _fileProgress: Record<FileId, FileProgress> = {};
   _totalProgress = {
     uploaded: 0,
     total: 0,
@@ -55,10 +55,7 @@ export class FileUploader extends MockEventEmitter {
 
   constructor(config: FileUploaderConfig) {
     super();
-    this._config = {
-      ...defaultConfig,
-      ...config,
-    };
+    this._config = Object.assign({}, defaultConfig, config);
     this._fileManager = new FileManager({
       allowedFileCount: this._config.allowedFileCount || -1,
       allowedFileTypes: this._config.allowedFileTypes || [],
