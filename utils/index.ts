@@ -1,3 +1,13 @@
+export const FileStatusEnum = {
+  ACCEPTED: 'accepted' as const,
+  QUEUED: 'queued' as const,
+  STARTED: 'started' as const,
+  COMPLETE: 'complete' as const,
+  FAILED: 'failed' as const,
+  REJECTED: 'rejected' as const,
+  CANCELLED: 'cancelled' as const,
+  CANCELLING: 'cancelling' as const,
+};
 
 export function generateRandomStr(length: number = 5) {
   return '';
@@ -25,10 +35,13 @@ export function getFileThumbnailUrl(file: File, maxSize: number) {
       const reader = new FileReader();
       reader.onload = async function () {
         if (this.result) {
-          getResizedImageData(this.result, maxSize, maxSize).then((url) => {
-            resolve(url);
-            URL.revokeObjectURL(url);
-          }, () => {});
+          getResizedImageData(this.result, maxSize, maxSize).then(
+            (url) => {
+              resolve(url);
+              URL.revokeObjectURL(url);
+            },
+            () => {}
+          );
         }
       };
       reader.onerror = function () {
@@ -41,7 +54,11 @@ export function getFileThumbnailUrl(file: File, maxSize: number) {
   });
 }
 
-function getResizedImageData(url: string | ArrayBuffer, preferredWidth: number, preferredHeight: number) {
+function getResizedImageData(
+  url: string | ArrayBuffer,
+  preferredWidth: number,
+  preferredHeight: number
+) {
   return new Promise<string>((resolve, reject) => {
     const image = new Image();
 
@@ -76,5 +93,3 @@ function getResizedImageData(url: string | ArrayBuffer, preferredWidth: number, 
     image.src = url.toString();
   });
 }
-
-
