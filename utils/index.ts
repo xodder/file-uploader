@@ -9,8 +9,12 @@ export enum FileStatusEnum {
   CANCELLING = 'cancelling',
 }
 
+const charset =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 export function generateRandomStr(length: number = 5) {
-  return '';
+  return Array.from({ length }, () => {
+    return charset[Math.round(Math.random() * charset.length)];
+  }).join('');
 }
 
 const extensionToFileTypeMap = {
