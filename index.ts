@@ -456,7 +456,7 @@ export class FileUploader extends MockEventEmitter {
     return this._fileManager.getThumbnailUrl(fileId, size);
   }
 
-  getEagerThumbnailUrl(fileId: FileId, size: number) {
-    return this._fileManager.getEagerThumbnailUrl(fileId, size);
+  getCachedThumbnailUrl(fileId: FileId) {
+    return this._fileManager.getCachedThumbnailUrl(fileId);
   }
 }

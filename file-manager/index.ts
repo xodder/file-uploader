@@ -11,10 +11,15 @@ type FileManagerConfig = {
   allowedFileTypes: string[];
 };
 
+type FileValidator = (
+  file: File,
+  config: FileManagerConfig
+) => Promise<string | undefined>;
+
 class FileManager extends MockEventEmitter {
   _files: Record<FileId, FileInfo> = {};
-  _validators = [validateFileType];
-  _thumbnailUrls: Record<FileId, string> = {};
+  _validators: FileValidator[] = [validateFileType];
+  _cachedThumbnailUrls: Record<FileId, string> = {};
   _allowedFileCount = 0;
   _config: FileManagerConfig = {
     allowedFileCount: -1,
@@ -25,12 +30,6 @@ class FileManager extends MockEventEmitter {
     super();
     this._config = config;
     this._allowedFileCount = config.allowedFileCount;
-  }
-
-  reset() {
-    for (let fileId in this._files) {
-      this.removeFile(fileId);
-    }
   }
 
   getAllowedFileCount() {
@@ -53,34 +52,14 @@ class FileManager extends MockEventEmitter {
     return this._files[fileId]?.__raw;
   }
 
-  removeFile(fileId: FileId) {
-    if (fileId in this._files) {
-      delete this._files[fileId];
-      delete this._thumbnailUrls[fileId];
-      this.emit('removed', fileId);
-    }
-  }
-
-  updateFile(fileId: FileId, updates: Partial<FileInfo>) {
-    this._files[fileId] = {
-      ...this._files[fileId],
-      ...updates,
-    };
-    this.emit('changed', fileId, updates);
-  }
-
-  addFile(file: File) {
+  async addFile(file: File) {
     if (!this.isFilledUp()) {
-      this._processFile(file);
+      await this._processFile(file);
     }
   }
 
   isFilledUp() {
     return this._allowedFileCount === 0;
-  }
-
-  isEmpty() {
-    return Object.keys(this._files).length === 0;
   }
 
   async _processFile(file: File) {
@@ -99,7 +78,7 @@ class FileManager extends MockEventEmitter {
     return errors.filter((error) => !!error) as string[];
   }
 
-  async _markAsAccepted(file: File) {
+  _markAsAccepted(file: File) {
     const processedFile: FileInfo = {
       id: generateRandomStr(),
       name: file.name,
@@ -124,21 +103,45 @@ class FileManager extends MockEventEmitter {
     this.emit('rejected', file, reasons);
   }
 
-  async getThumbnailUrl(fileId: FileId, maxSize: number) {
-    let thumbnailUrl = this._thumbnailUrls[fileId];
+  updateFile(fileId: FileId, updates: Partial<FileInfo>) {
+    this._files[fileId] = {
+      ...this._files[fileId],
+      ...updates,
+    };
+    this.emit('changed', fileId, updates);
+  }
 
-    if (!thumbnailUrl) {
-      thumbnailUrl = await getFileThumbnailUrl(
+  removeFile(fileId: FileId) {
+    if (fileId in this._files) {
+      delete this._files[fileId];
+      delete this._cachedThumbnailUrls[fileId];
+      this.emit('removed', fileId);
+    }
+  }
+
+  async getThumbnailUrl(fileId: FileId, maxSize: number) {
+    if (!this._cachedThumbnailUrls[fileId]) {
+      this._cachedThumbnailUrls[fileId] = await getFileThumbnailUrl(
         this.getRawFile(fileId),
         maxSize
       );
     }
 
-    return thumbnailUrl;
+    return this._cachedThumbnailUrls[fileId];
   }
 
-  getEagerThumbnailUrl(fileId: FileId, maxSize: number) {
-    return this._thumbnailUrls[fileId];
+  getCachedThumbnailUrl(fileId: FileId) {
+    return this._cachedThumbnailUrls[fileId];
+  }
+
+  isEmpty() {
+    return Object.keys(this._files).length === 0;
+  }
+
+  reset() {
+    for (let fileId in this._files) {
+      this.removeFile(fileId);
+    }
   }
 }
 
