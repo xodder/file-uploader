@@ -1,0 +1,39 @@
+{
+  "name": "@xod/file-uploader",
+  "version": "1.0.0",
+  "description": "Simple and Flexible file uploader util for React",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xodder/file-uploader.git"
+  },
+  "keywords": [],
+  "author": "Stephen Odebiyi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xodder/file-uploader/issues"
+  },
+  "homepage": "https://github.com/xodder/file-uploader#readme",
+  "scripts": {
+    "prepublish": "tsc",
+    "lint": "eslint --ext .js,.ts,.tsx"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.26",
+    "@typescript-eslint/eslint-plugin": "^5.47.1",
+    "@typescript-eslint/parser": "^5.47.1",
+    "eslint": "8.30.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.1",
+    "typescript": "4.9.4"
+  }
+}
