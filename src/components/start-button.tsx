@@ -9,7 +9,7 @@ import { composable, ComposableComponentProps } from './shared/composable';
 type BaseProps = ComposableComponentProps<'button'>;
 
 export interface StartButtonProps extends BaseProps {
-  fileId: FileId;
+  fileId?: FileId;
   onlyRenderIfStartable?: boolean;
   beforeAction?: () => Promise<boolean>;
 }
