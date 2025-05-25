@@ -1,7 +1,5 @@
-import React from 'react';
+import { useState } from 'react';
 
-function useConstant<T>(fn: () => T): T {
-  return React.useState(fn)[0];
+export function useConstant<T>(initializer: () => T): T {
+  return useState(initializer)[0];
 }
-
-export default useConstant;

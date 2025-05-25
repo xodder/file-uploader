@@ -5,10 +5,8 @@ const extensionToFileTypeMap: Record<string, string> = {
   gif: 'image/gif',
 };
 
-function getFileTypeFromExtension(file: File) {
+export function getFileTypeFromExtension(file: File) {
   const extension = file.name.substring(file.name.lastIndexOf('.') + 1);
 
   return extensionToFileTypeMap[extension];
 }
-
-export default getFileTypeFromExtension;

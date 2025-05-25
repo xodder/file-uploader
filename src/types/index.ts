@@ -1,12 +1,31 @@
-import React from 'react';
+export enum FileStatusEnum {
+  ACCEPTED = 'accepted',
+  QUEUED = 'queued',
+  STARTED = 'started',
+  COMPLETE = 'complete',
+  FAILED = 'failed',
+  REJECTED = 'rejected',
+  CANCELLED = 'cancelled',
+  CANCELLING = 'cancelling',
+}
 
-export type DistributiveOmit<T, U> = T extends any
-  ? Pick<T, Exclude<keyof T, U>>
-  : never;
+export type FileStatus = `${FileStatusEnum}`;
 
-export type OverridableComponentProps<C extends React.ElementType, P> = {
-  component: C;
-} & OverrideComponentProps<C, P>;
+export type FileId = string;
 
-type OverrideComponentProps<C extends React.ElementType, P> = P &
-  DistributiveOmit<React.ComponentPropsWithRef<C>, keyof P>;
+export interface InternalFile {
+  id: FileId;
+  name: string;
+  size: number;
+  type: string;
+  category: string;
+  status: FileStatus;
+  progress: number;
+  __handler?: FileHandler;
+  __raw: File;
+}
+
+export interface FileHandler {
+  start: (file: File) => Promise<unknown>;
+  cancel: () => void;
+}
