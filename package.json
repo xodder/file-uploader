@@ -22,7 +22,10 @@
     "prepublish": "tsc",
     "lint": "eslint --ext .js,.ts,.tsx"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.2.3",
+    "filesize": "^10.1.6"
+  },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },

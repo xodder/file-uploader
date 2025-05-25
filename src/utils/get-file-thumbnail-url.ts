@@ -1,7 +1,10 @@
-function getFileThumbnailUrl(file: File, maxSize: number) {
+type FileReaderResult = FileReader['result'];
+
+export function getFileThumbnailUrl(file: File, maxSize: number) {
   return new Promise<string>((resolve) => {
     try {
       const reader = new FileReader();
+
       reader.onload = async function () {
         if (this.result) {
           const url = await resizeImage(this.result, maxSize, maxSize);
@@ -9,9 +12,11 @@ function getFileThumbnailUrl(file: File, maxSize: number) {
           URL.revokeObjectURL(url);
         }
       };
+
       reader.onerror = function () {
         resolve('');
       };
+
       reader.readAsDataURL(file);
     } catch (e) {
       resolve('');
@@ -19,12 +24,12 @@ function getFileThumbnailUrl(file: File, maxSize: number) {
   });
 }
 
-function resizeImage(url: string | ArrayBuffer, w: number, h: number) {
+function resizeImage(url: FileReaderResult, w: number, h: number) {
   return new Promise<string>((resolve, reject) => {
-    const srcImage = new Image();
+    const image = new Image();
 
-    srcImage.onload = function () {
-      const naturalAspectRatio = srcImage.naturalWidth / srcImage.naturalHeight;
+    image.onload = function () {
+      const naturalAspectRatio = image.naturalWidth / image.naturalHeight;
 
       let resolvedWidth = w * naturalAspectRatio;
       let resolvedHeight = h / naturalAspectRatio;
@@ -46,13 +51,17 @@ function resizeImage(url: string | ArrayBuffer, w: number, h: number) {
       if (!ctx) {
         reject('Image could not be resized. No canvas context.');
       } else {
-        ctx.drawImage(srcImage, 0, 0, resolvedWidth, resolvedHeight);
+        ctx.drawImage(image, 0, 0, resolvedWidth, resolvedHeight);
         resolve(canvas.toDataURL());
       }
     };
 
-    srcImage.src = url.toString();
+    image.src = urlToSrc(url);
   });
 }
 
-export default getFileThumbnailUrl;
+function urlToSrc(url: FileReaderResult) {
+  if (!url) return '';
+
+  return typeof url === 'string' ? url : new TextDecoder().decode(url);
+}

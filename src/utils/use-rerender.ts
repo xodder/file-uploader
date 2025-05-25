@@ -1,21 +1,19 @@
-import React from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 
-function useRerender() {
-  const [, dispatch] = React.useReducer((c: number) => (c + 1) % 100, 0);
-  const mountedRef = React.useRef(false);
+export function useRerender() {
+  const [, dispatch] = useReducer((c: number) => (c + 1) % 100, 0);
+  const mountedRef = useRef(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     mountedRef.current = true;
     return () => {
       mountedRef.current = false;
     };
   }, []);
 
-  return React.useCallback(() => {
+  return useCallback(() => {
     if (mountedRef.current) {
       dispatch();
     }
   }, []);
 }
-
-export default useRerender;
