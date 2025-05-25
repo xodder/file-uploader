@@ -19,8 +19,7 @@ export enum FileManagerEvent {
   CHANGED = 'changed',
 }
 
-export class FileManager {
-  private emitter = new EventEmitter();
+export class FileManager extends EventEmitter {
   private files: Record<FileId, InternalFile> = {};
   private validators = [validateFileType, validateFileSize];
   private thumbnailUrls: Record<FileId, string> = {};
@@ -32,11 +31,8 @@ export class FileManager {
     minAllowedFileSize: -1,
   };
 
-  on = this.emitter.on.bind(this);
-  off = this.emitter.off.bind(this);
-  emit = this.emitter.emit.bind(this);
-
   constructor(config: FileManagerConfig) {
+    super();
     this.config = config;
     this.allowedFileCount = config.allowedFileCount;
   }
