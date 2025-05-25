@@ -54,8 +54,7 @@ export enum FileUploaderEvent {
   LIMIT_EXCEEDED = 'limit_exceeded',
 }
 
-export class FileUploader {
-  private emitter = new EventEmitter();
+export class FileUploader extends EventEmitter {
   private fileManager: FileManager;
   private config: FileUploaderConfig = {};
   private fileProgress: Record<FileId, [number, number]> = {};
@@ -69,11 +68,9 @@ export class FileUploader {
 
   private totalProgress = { uploaded: 0, total: 0 };
 
-  on = this.emitter.on.bind(this);
-  off = this.emitter.off.bind(this);
-  emit = this.emitter.emit.bind(this);
-
   constructor(config: FileUploaderConfig) {
+    super();
+
     this.config = { ...defaultConfig, ...config };
 
     this.fileManager = new FileManager({
@@ -85,19 +82,19 @@ export class FileUploader {
 
     this.fileManager.on(
       FileManagerEvent.ACCEPTED,
-      this.onFileAccepted.bind(this),
+      this.onFileAccepted.bind(this)
     );
     this.fileManager.on(
       FileManagerEvent.REJECTED,
-      this.onFileRejected.bind(this),
+      this.onFileRejected.bind(this)
     );
     this.fileManager.on(
       FileManagerEvent.REMOVED,
-      this.onFileRemoved.bind(this),
+      this.onFileRemoved.bind(this)
     );
     this.fileManager.on(
       FileManagerEvent.CHANGED,
-      this.onFileChanged.bind(this),
+      this.onFileChanged.bind(this)
     );
   }
 
@@ -281,7 +278,7 @@ export class FileUploader {
   }
 
   getConfigValue<T extends keyof FileUploaderConfig>(
-    key: T,
+    key: T
   ): FileUploaderConfig[T] {
     return this.config[key];
   }
