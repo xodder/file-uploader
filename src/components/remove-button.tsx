@@ -29,7 +29,7 @@ export const RemoveButton = createComponent<RemoveButtonProps>(
           type="button"
           {...props}
           ref={ref}
-          onClick={void handleClick}
+          onClick={handleClick as any}
         />
       );
     }

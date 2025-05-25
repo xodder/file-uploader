@@ -37,7 +37,7 @@ export const StartButton = createComponent<StartButtonProps>(
           type="button"
           {...props}
           ref={ref}
-          onClick={void handleClick}
+          onClick={handleClick as any}
           disabled={!startable}
         />
       );
