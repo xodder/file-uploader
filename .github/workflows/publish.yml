@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@xod'
+          scope: '@xodder'
 
       # Setup pnpm
       - uses: pnpm/action-setup@v4

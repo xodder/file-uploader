@@ -1,5 +1,5 @@
 {
-  "name": "@xod/file-uploader",
+  "name": "@xodder/file-uploader",
   "version": "1.0.0",
   "description": "Simple and Flexible file uploader util for React",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/xodder/file-uploader.git"
   },
   "keywords": [],
-  "author": "Stephen Odebiyi",
+  "author": "xodder",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/xodder/file-uploader/issues"
