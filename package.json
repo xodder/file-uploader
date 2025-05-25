@@ -20,6 +20,7 @@
   "homepage": "https://github.com/xodder/file-uploader#readme",
   "scripts": {
     "prepublish": "tsc",
+    "build": "tsc",
     "lint": "eslint --ext .js,.ts,.tsx"
   },
   "dependencies": {

@@ -1,8 +1,8 @@
 import { Slot } from '@radix-ui/react-slot';
-import { FC, createElement, forwardRef } from 'react';
+import { ComponentPropsWithRef, FC, createElement, forwardRef } from 'react';
 
 export type ComposableComponentProps<T extends IntrinsicElementNames> =
-  JSX.IntrinsicElements[T] & {
+  ComponentPropsWithRef<T> & {
     asChild?: boolean;
   };
 
@@ -13,13 +13,11 @@ type Composable = {
 const cache = new Map();
 
 export const composable = new Proxy({} as Composable, {
-  apply(_, __, args) {
-    return createComposableComponent(args[0]);
-  },
   get(_, el) {
     if (!cache.has(el)) {
       cache.set(el, createComposableComponent(el as any));
     }
+
     return cache.get(el);
   },
 });
