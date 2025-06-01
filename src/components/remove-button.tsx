@@ -15,7 +15,8 @@ export const RemoveButton = createComponent<RemoveButtonProps>(
   ({ fileId, beforeAction, onlyRenderIfRemovable, ...props }, ref) => {
     const uploader = useFileUploader();
     const status = useFileStatus(fileId);
-    const removable = status === 'queued' || status === 'complete';
+    const removable =
+      !status || ['queued', 'failed', 'complete'].includes(status);
 
     async function handleClick() {
       if (!beforeAction || (await beforeAction())) {
@@ -23,7 +24,7 @@ export const RemoveButton = createComponent<RemoveButtonProps>(
       }
     }
 
-    if (removable || onlyRenderIfRemovable) {
+    if (removable || !onlyRenderIfRemovable) {
       return (
         <composable.button
           type="button"

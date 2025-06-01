@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo } from 'react';
+import { useFileStatus } from '../helpers';
 import { useFileProgress } from '../helpers/use-file-progress';
-import { useFileUploaderEvent } from '../helpers/use-file-uploader-event';
 import { useFileUploader } from '../helpers/use-file-uploader';
 import { FileId } from '../types';
 
@@ -47,18 +47,21 @@ function useProgressInfo({
   hideBeforeStart,
   hideOnComplete,
 }: UseProgressInfoOptions) {
-  const [hidden, setHidden] = useState(!!hideBeforeStart);
   const progress = useFileProgress(fileId);
+  const status = useFileStatus(fileId);
+  const hidden = useMemo(() => {
+    if (!fileId) {
+      return !!hideOnComplete && !uploader.isComplete();
+    }
 
-  useFileUploaderEvent({
-    onStatusChanged: (affectedFileId, newStatus) => {
-      if (!fileId) {
-        setHidden(!!hideOnComplete && !uploader.isComplete());
-      } else if (affectedFileId === fileId) {
-        setHidden(!!hideOnComplete && newStatus === 'complete');
-      }
-    },
-  });
+    return (
+      (hideBeforeStart && status === 'queued') ||
+      (hideOnComplete && status === 'complete')
+    );
+  }, [status]);
 
-  return { hidden, progress };
+  return {
+    hidden,
+    progress,
+  };
 }

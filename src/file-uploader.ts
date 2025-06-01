@@ -102,21 +102,24 @@ export class FileUploader extends EventEmitter {
     this.markAsQueued(file.id);
     this.updateTotalProgress(file.id, 0, file.size);
 
-    if (this.config.autoUpload) {
+    const isActivated =
+      this.uploads.active.length > 0 ||
+      this.uploads.completed.length > 0 ||
+      this.uploads.failed.length > 0;
+
+    if (this.config.autoUpload || isActivated) {
       this.attemptUpload();
     }
   }
 
-  private attemptUpload(propagate = true) {
-    if (this.canUpload() || !propagate) {
+  private attemptUpload(force = false) {
+    if (this.canUpload() || force) {
       const nextFileId = this.uploads.queued.shift();
 
       if (nextFileId) {
         void this.doUpload(nextFileId);
 
-        if (propagate) {
-          this.attemptUpload();
-        }
+        this.attemptUpload();
       }
     }
   }
@@ -164,7 +167,7 @@ export class FileUploader extends EventEmitter {
     if (this.isComplete()) {
       this.emit(FileUploaderEvent.TOTAL_PROGRESS, 1);
       this.emit(FileUploaderEvent.ALL_COMPLETE);
-    } else if (this.config.autoUpload) {
+    } else {
       this.attemptUpload();
     }
   }
@@ -351,7 +354,7 @@ export class FileUploader extends EventEmitter {
       if (this.isQueued(fileId)) {
         this.uploads.queued.splice(this.uploads.queued.indexOf(fileId), 1);
         this.uploads.queued.unshift(fileId);
-        this.attemptUpload(false);
+        this.attemptUpload();
       } else if (this.isFailed(fileId)) {
         this.retry(fileId);
       }
