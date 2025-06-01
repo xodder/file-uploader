@@ -9,7 +9,7 @@ import { composable, ComposableComponentProps } from './shared/composable';
 type BaseProps = ComposableComponentProps<'button'>;
 
 export interface CancelButtonProps extends BaseProps {
-  fileId: FileId;
+  fileId?: FileId;
   onlyRenderIfCancelable?: boolean;
   beforeAction?: () => Promise<boolean>;
 }

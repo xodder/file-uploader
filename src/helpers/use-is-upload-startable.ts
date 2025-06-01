@@ -9,7 +9,7 @@ export function useIsUploadStartable(fileId?: FileId) {
   const status = useFileStatus(fileId);
 
   if (!fileId) {
-    return !uploader.hasStarted();
+    return uploader.getQueuedFileCount() > 0 && !uploader.hasStarted();
   }
 
   return [FileStatusEnum.QUEUED, FileStatusEnum.FAILED].includes(status as any);
